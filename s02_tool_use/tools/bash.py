@@ -19,9 +19,14 @@ def run_bash(command: str) -> str:
     if first in DANGEROUS_CMDS or any(p in command for p in DANGEROUS_PATTERNS):
         return "Error: Dangerous command blocked"
     try:
+        # encoding="utf-8" + errors="replace"：Windows 默认用 GBK 解码会崩
+        # （中文文件名 / git bash 的 UTF-8 输出都含 GBK 解不了的字节）。
+        # errors="replace" 保证解不了的字节替换成 �，绝不抛异常。
         r = subprocess.run(command, shell=True, cwd=WORKDIR,
-                           capture_output=True, text=True, timeout=120)
-        out = (r.stdout + r.stderr).strip()
+                           capture_output=True, text=True, timeout=120,
+                           encoding="utf-8", errors="replace")
+        # or "" 兜底：万一捕获失败 stdout/stderr 为 None，别让 + 崩
+        out = ((r.stdout or "") + (r.stderr or "")).strip()
         return out[:50000] if out else "(no output)"
     except subprocess.TimeoutExpired:
         return "Error: Timeout (120s)"
