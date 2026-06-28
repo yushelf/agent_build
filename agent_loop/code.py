@@ -66,8 +66,16 @@ TOOLS = [{
 }]
 # ── Tool execution ────────────────────────────────────────
 def run_bash(command: str) -> str:
-    dangerous = ["rm -rf /", "sudo", "shutdown", "reboot", "> /dev/"]
-    if any(d in command for d in dangerous):
+    # 危险命令拦截（示意性护栏，非生产级安全防护）
+    # 生产 agent 不靠黑名单做安全——靠沙箱和权限隔离。这里只是防教学时手滑误删
+    # 命令名：匹配第一个词，避免 'del' 子串误伤 'delete' / 'delta'
+    DANGEROUS_CMDS = {"del", "rmdir", "rd", "format", "diskpart",
+                      "shutdown", "reboot", "sudo"}
+    # 复合模式：带参数的危险组合（子串匹配）
+    DANGEROUS_PATTERNS = ["rm -rf /", "rm -rf ~", "rm -rf *", "> /dev/"]
+    stripped = command.strip()
+    first = stripped.split()[0].lower() if stripped else ""
+    if first in DANGEROUS_CMDS or any(p in command for p in DANGEROUS_PATTERNS):
         return "Error: Dangerous command blocked"
     try:
         r = subprocess.run(command, shell=True, cwd=os.getcwd(),
