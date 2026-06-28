@@ -1,0 +1,16 @@
+# 真实配置（含密钥），不提交
+settings.json
+
+# Claude Code 本地配置
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 系统文件
+.DS_Store
+Thumbs.db
