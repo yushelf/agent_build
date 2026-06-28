@@ -4,7 +4,7 @@
 
 ## 内容
 
-- `agent_loop/code.py` — Agent Loop 核心模式：`while stop_reason == "tool_use"` 循环调用 LLM + 工具，直到模型自行停止。
+- `s01_agent_loop/code.py` — Agent Loop 核心模式：`while stop_reason == "tool_use"` 循环调用 LLM + 工具，直到模型自行停止。
 - `settings.example.json` — 配置模板（密钥已脱敏）。
 
 ## 配置
@@ -23,7 +23,7 @@ cp settings.example.json settings.json
 
 ```bash
 pip install anthropic
-python agent_loop/code.py
+python s01_agent_loop/code.py
 ```
 
 ## 工作原理

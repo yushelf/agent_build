@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-agent_loop.py - The Agent Loop
+s01_agent_loop.py - The Agent Loop
 The entire secret of an AI coding agent in one pattern:
     while stop_reason == "tool_use":
         response = LLM(messages, tools)
@@ -20,7 +20,7 @@ policy, hooks, and lifecycle controls on top.
 配置来源：读取父目录的 settings.json（与 Claude Code 共用同一份配置）
 Usage:
     pip install anthropic
-    python agent_loop/code.py
+    python s01_agent_loop/code.py
 """
 import os
 import json
@@ -36,7 +36,7 @@ _SETTINGS_CANDIDATES = [
 ]
 SETTINGS_PATH = next((p for p in _SETTINGS_CANDIDATES if p.exists()), None)
 if SETTINGS_PATH is None:
-    raise FileNotFoundError("找不到 settings.json，请放在 agent_loop/ 的父目录或同目录")
+    raise FileNotFoundError("找不到 settings.json，请放在 s01_agent_loop/ 的父目录或同目录")
 
 with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
     settings = json.load(f)
@@ -87,7 +87,7 @@ def run_bash(command: str) -> str:
     except (FileNotFoundError, OSError) as e:
         return f"Error: {e}"
 # ── The core pattern: a while loop that calls tools until the model stops ──
-def agent_loop(messages: list):
+def s01_agent_loop(messages: list):
     turn = 0
     while True:
         turn += 1
@@ -148,5 +148,5 @@ if __name__ == "__main__":
         if query.strip().lower() in ("q", "exit", ""):
             break
         history.append({"role": "user", "content": query})
-        agent_loop(history)
+        s01_agent_loop(history)
         print()
